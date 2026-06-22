@@ -1,5 +1,5 @@
-/*
-Copyright � Joan Charmant 2008.
+﻿/*
+Copyright � Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -101,6 +101,7 @@ namespace Kinovea.Root
             FormSplashScreen splashForm = new FormSplashScreen();
             splashForm.Show();
             splashForm.Update();
+            System.Threading.Thread.Sleep(3000);  // 👈 至少显示 3 秒
 
             RootKernel kernel = new RootKernel();
             kernel.Prepare();
