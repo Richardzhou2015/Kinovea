@@ -547,6 +547,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\pictureBox1.BackgroundImage.png" />
     <None Include="Resources\shortcut2.png" />
     <None Include="Resources\rename-16.png" />
     <None Include="Resources\symlink-file-16.png" />
