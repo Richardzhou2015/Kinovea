@@ -20,13 +20,15 @@ namespace Kinovea.Root
                 string boardSn = GetWmiInfo("Win32_BaseBoard", "SerialNumber");
                 string raw = $"{cpuId}_{boardSn}";
 
-                using var sha = SHA256.Create();
-                byte[] hashBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(raw));
-                StringBuilder sb = new StringBuilder();
-                foreach (byte b in hashBytes)
-                    sb.Append($"{b:X2}");
+                using (var sha = SHA256.Create())
+                {
+                    byte[] hashBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(raw));
+                    StringBuilder sb = new StringBuilder();
+                    foreach (byte b in hashBytes)
+                        sb.Append($"{b:X2}");
 
-                _machineId = sb.ToString();
+                    _machineId = sb.ToString();
+                }
             }
             catch
             {
@@ -38,11 +40,13 @@ namespace Kinovea.Root
 
         private static string GetWmiInfo(string table, string field)
         {
-            using var searcher = new ManagementObjectSearcher($"SELECT {field} FROM {table}");
-            foreach (var mObj in searcher.Get())
+            using (var searcher = new ManagementObjectSearcher($"SELECT {field} FROM {table}"))
             {
-                var val = mObj[field];
-                return val?.ToString() ?? "";
+                foreach (var mObj in searcher.Get())
+                {
+                    var val = mObj[field];
+                    return val?.ToString() ?? "";
+                }
             }
             return "";
         }
