@@ -1,5 +1,5 @@
-/*
-Copyright � Joan Charmant 2008.
+﻿/*
+Copyright � Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -89,7 +89,7 @@ namespace Kinovea.Root
         /// </summary>
         public void UpdateTitle()
         {
-            string title = "Kinovea";
+            string title = "射箭运动姿态评估分析系统1.0";
             if (!string.IsNullOrEmpty(WindowManager.TitleName))
                 title += string.Format(" [{0}]", WindowManager.TitleName);
 

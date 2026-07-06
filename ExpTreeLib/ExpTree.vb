@@ -1,4 +1,4 @@
-
+﻿
 Imports System
 Imports System.ComponentModel
 Imports System.Drawing
@@ -142,7 +142,9 @@ Public Class ExpTree
                 If Not IsNothing(Root) Then
                     ClearTree()
                 End If
+
                 Root = New TreeNode(Value.DisplayName)
+                ' Root = New TreeNode("桌面")
                 BuildTree(Value.GetDirectories())
                 Root.ImageIndex = SystemImageListManager.GetIconIndex(Value, False)
                 Root.SelectedImageIndex = Root.ImageIndex

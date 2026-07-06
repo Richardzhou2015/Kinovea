@@ -128,7 +128,7 @@
     <value>0, 0</value>
   </data>
   <data name="menuStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>956, 24</value>
+    <value>1912, 24</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="menuStrip.TabIndex" type="System.Int32, mscorlib">
@@ -153,10 +153,14 @@
     <value>0, 640</value>
   </metadata>
   <data name="statusStrip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 640</value>
+    <value>0, 1200</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="statusStrip.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 0, 28, 0</value>
   </data>
   <data name="statusStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>956, 22</value>
+    <value>1912, 22</value>
   </data>
   <data name="statusStrip.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -185,8 +189,11 @@
   <data name="toolStrip.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 24</value>
   </data>
+  <data name="toolStrip.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 4, 0</value>
+  </data>
   <data name="toolStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>956, 25</value>
+    <value>1912, 25</value>
   </data>
   <data name="toolStrip.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -209,11 +216,14 @@
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>25</value>
+  </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
+    <value>12, 24</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>956, 662</value>
+    <value>1912, 1222</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -706,10 +716,12 @@
         AAAAgAAAAIABAACAAwAAgA8AAIA/AACA/wAAw/8AAP//AAA=
 </value>
   </data>
-  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>560, 500</value>
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>1094, 863</value>
+  </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>
   </data>

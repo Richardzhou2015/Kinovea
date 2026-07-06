@@ -1,4 +1,4 @@
-namespace Kinovea.Root
+﻿namespace Kinovea.Root
 {
     partial class KinoveaMainWindow
     {
@@ -30,47 +30,51 @@ namespace Kinovea.Root
         /// </summary>
         private void InitializeComponent()
         {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KinoveaMainWindow));
-      this.menuStrip = new System.Windows.Forms.MenuStrip();
-      this.statusStrip = new System.Windows.Forms.StatusStrip();
-      this.toolStrip = new System.Windows.Forms.ToolStrip();
-      this.SuspendLayout();
-      // 
-      // menuStrip
-      // 
-      this.menuStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(188)))), ((int)(((byte)(199)))), ((int)(((byte)(216)))));
-      resources.ApplyResources(this.menuStrip, "menuStrip");
-      this.menuStrip.Name = "menuStrip";
-      // 
-      // statusStrip
-      // 
-      this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
-      resources.ApplyResources(this.statusStrip, "statusStrip");
-      this.statusStrip.Name = "statusStrip";
-      // 
-      // toolStrip
-      // 
-      this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(227)))), ((int)(((byte)(237)))));
-      resources.ApplyResources(this.toolStrip, "toolStrip");
-      this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-      this.toolStrip.Name = "toolStrip";
-      // 
-      // KinoveaMainWindow
-      // 
-      resources.ApplyResources(this, "$this");
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.BackColor = System.Drawing.Color.White;
-      this.Controls.Add(this.toolStrip);
-      this.Controls.Add(this.menuStrip);
-      this.Controls.Add(this.statusStrip);
-      this.IsMdiContainer = true;
-      this.KeyPreview = true;
-      this.MainMenuStrip = this.menuStrip;
-      this.Name = "KinoveaMainWindow";
-      this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UserInterface_FormClosing);
-      this.ResumeLayout(false);
-      this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KinoveaMainWindow));
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.SuspendLayout();
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(188)))), ((int)(((byte)(199)))), ((int)(((byte)(216)))));
+            resources.ApplyResources(this.menuStrip, "menuStrip");
+            this.menuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
+            this.menuStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.menuStrip.Name = "menuStrip";
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
+            this.statusStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+            resources.ApplyResources(this.statusStrip, "statusStrip");
+            this.statusStrip.Name = "statusStrip";
+            // 
+            // toolStrip
+            // 
+            this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(227)))), ((int)(((byte)(237)))));
+            resources.ApplyResources(this.toolStrip, "toolStrip");
+            this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.toolStrip.Name = "toolStrip";
+            // 
+            // KinoveaMainWindow
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.toolStrip);
+            this.Controls.Add(this.menuStrip);
+            this.Controls.Add(this.statusStrip);
+            this.IsMdiContainer = true;
+            this.KeyPreview = true;
+            this.MainMenuStrip = this.menuStrip;
+            this.Name = "KinoveaMainWindow";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UserInterface_FormClosing);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
