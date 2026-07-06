@@ -125,7 +125,11 @@ namespace Kinovea.Root
         #endregion
 
         #region Constructor
-        public RootKernel()
+        public RootKernel() : this(null)
+        {
+        }
+
+        public RootKernel(FormSplashScreen splash)
         {
             bool enableVideoReaders = true;
             bool enableCameraManagers = true;
@@ -135,6 +139,7 @@ namespace Kinovea.Root
 
             if (enableVideoReaders)
             {
+                splash?.UpdateLoadProgress(10, "加载视频解码器...");
                 List<Type> videoReaders = new List<Type>();
                 log.Debug("Loading video readers.");
                 stopwatch.Restart();
@@ -145,10 +150,12 @@ namespace Kinovea.Root
                 videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
                 VideoTypeManager.LoadVideoReaders(videoReaders);
                 log.DebugFormat("Loaded video readers:{0} ms.", stopwatch.ElapsedMilliseconds);
+                splash?.UpdateLoadProgress(25, "视频解码器加载完成");
             }
 
             if (enableCameraManagers)
             {
+                splash?.UpdateLoadProgress(30, "加载相机驱动...");
                 log.Debug("Loading built-in camera managers.");
                 stopwatch.Restart();
                 CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
@@ -160,33 +167,41 @@ namespace Kinovea.Root
                 stopwatch.Restart();
                 CameraTypeManager.LoadCameraManagersPlugins();
                 log.DebugFormat("Loaded external camera managers:{0} ms.", stopwatch.ElapsedMilliseconds);
+                splash?.UpdateLoadProgress(55, "相机驱动加载完成");
             }
 
             if (enableTools)
             {
+                splash?.UpdateLoadProgress(60, "加载测量工具...");
                 log.Debug("Loading tools.");
                 stopwatch.Restart();
                 ToolManager.LoadTools();
                 log.DebugFormat("Loaded tools:{0} ms.", stopwatch.ElapsedMilliseconds);
+                splash?.UpdateLoadProgress(70, "测量工具加载完成");
             }
             
             if (enableCursors)
             {
+                splash?.UpdateLoadProgress(75, "加载光标...");
                 log.Debug("Loading cursors.");
                 stopwatch.Restart();
                 PointerManager.LoadPointers();
                 log.DebugFormat("Loaded cursors:{0} ms.", stopwatch.ElapsedMilliseconds);
+                splash?.UpdateLoadProgress(80, "光标加载完成");
             }
 
             if (enableVariables)
             {
+                splash?.UpdateLoadProgress(85, "加载变量系统...");
                 log.Debug("Loading variables.");
                 stopwatch.Restart();
                 VariablesRepository.Initialize();
                 log.DebugFormat("Loaded variables:{0} ms.", stopwatch.ElapsedMilliseconds);
+                splash?.UpdateLoadProgress(90, "变量系统加载完成");
             }
 
             // Build all other modules and their UI.
+            splash?.UpdateLoadProgress(93, "构建界面模块...");
             BuildSubTree();
 
             // Build the host UI.
@@ -208,6 +223,8 @@ namespace Kinovea.Root
             ExtendUI();
 
             FormsHelper.SetMainForm(mainWindow);
+
+            splash?.UpdateLoadProgress(100, "加载完成");
         }
         #endregion
 

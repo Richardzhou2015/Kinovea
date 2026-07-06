@@ -31,11 +31,13 @@ namespace Kinovea.Root
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSplashScreen));
       this.lblVersion = new System.Windows.Forms.Label();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      this.progressBar1 = new System.Windows.Forms.ProgressBar();
+      this.lblStatus = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.SuspendLayout();
       // 
       // lblVersion
-      // 
+      // 
       this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.lblVersion.AutoSize = true;
       this.lblVersion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
@@ -47,6 +49,7 @@ namespace Kinovea.Root
       this.lblVersion.Size = new System.Drawing.Size(70, 22);
       this.lblVersion.TabIndex = 1;
       this.lblVersion.Text = "2025.1";
+      this.lblVersion.Visible = false;
       // 
       // pictureBox1
       // 
@@ -61,6 +64,26 @@ namespace Kinovea.Root
       this.pictureBox1.TabIndex = 2;
       this.pictureBox1.TabStop = false;
       // 
+      // progressBar1
+      // 
+      this.progressBar1.Location = new System.Drawing.Point(60, 200);
+      this.progressBar1.Name = "progressBar1";
+      this.progressBar1.Size = new System.Drawing.Size(440, 23);
+      this.progressBar1.TabIndex = 3;
+      this.progressBar1.Visible = false;
+      // 
+      // lblStatus
+      // 
+      this.lblStatus.AutoSize = false;
+      this.lblStatus.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblStatus.ForeColor = System.Drawing.Color.White;
+      this.lblStatus.Location = new System.Drawing.Point(60, 160);
+      this.lblStatus.Name = "lblStatus";
+      this.lblStatus.Size = new System.Drawing.Size(440, 30);
+      this.lblStatus.TabIndex = 4;
+      this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblStatus.Visible = false;
+      // 
       // FormSplashScreen
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -68,6 +91,8 @@ namespace Kinovea.Root
       this.BackColor = System.Drawing.Color.White;
       this.ClientSize = new System.Drawing.Size(560, 353);
       this.ControlBox = false;
+      this.Controls.Add(this.lblStatus);
+      this.Controls.Add(this.progressBar1);
       this.Controls.Add(this.lblVersion);
       this.Controls.Add(this.pictureBox1);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -85,5 +110,7 @@ namespace Kinovea.Root
         #endregion
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label lblStatus;
     }
 }

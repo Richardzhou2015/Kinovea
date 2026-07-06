@@ -1,5 +1,5 @@
 /*
-Copyright © Joan Charmant 2008.
+Copyright ï¿½ Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -34,6 +34,42 @@ namespace Kinovea.Root
                 lblVersion.Text = v.Major + "." + v.Minor;
             else
                 lblVersion.Text = v.Major + "." + v.Minor + "." + v.Build;
+        }
+
+        /// <summary>
+        /// Lightweight loading splash with progress bar.
+        /// Hides the original picture background and shows progress controls.
+        /// </summary>
+        public FormSplashScreen(bool lightMode) : this()
+        {
+            if (lightMode)
+            {
+                pictureBox1.Visible = false;
+                lblVersion.Visible = false;
+                lblStatus.Visible = true;
+                progressBar1.Visible = true;
+                progressBar1.Value = 0;
+            }
+        }
+
+        /// <summary>
+        /// Thread-safe progress update.
+        /// Can be called from any thread; marshals to UI thread via Invoke.
+        /// </summary>
+        public void UpdateLoadProgress(int percent, string statusText)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => UpdateLoadProgress(percent, statusText)));
+                return;
+            }
+
+            if (percent < 0) percent = 0;
+            if (percent > 100) percent = 100;
+
+            progressBar1.Value = percent;
+            lblStatus.Text = statusText;
+            this.Update();
         }
     }
 }

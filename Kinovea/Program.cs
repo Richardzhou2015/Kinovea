@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright � Joan Charmant 2008.
 jcharmant@gmail.com 
  
@@ -97,20 +97,45 @@ namespace Kinovea.Root
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // ========== [前置登录模块] ==========
+            log.Debug("Login phase: showing login window.");
+            string machineId = MachineHelper.GetMachineUniqueId();
+
+            using (LoginSplash loginWindow = new LoginSplash())
+            {
+                DialogResult loginCheck = loginWindow.ShowDialog();
+
+                if (loginCheck != DialogResult.OK)
+                {
+                    log.Info("Login cancelled or failed. Exiting.");
+                    ClientSession.Clear();
+                    return;
+                }
+
+                ClientSession.MachineId = machineId;
+                // AuthToken/UserName/UserId are already set inside LoginSplash.btnLogin_Click
+            }
+
+            log.InfoFormat("Login successful. MachineId:{0}", machineId);
+            // ========== [/前置登录模块] ==========
+
             log.Debug("Showing SplashScreen.");
-            FormSplashScreen splashForm = new FormSplashScreen();
+            FormSplashScreen splashForm = new FormSplashScreen(true);  // 轻量化模式：进度条 + 状态文字
             splashForm.Show();
             splashForm.Update();
-            System.Threading.Thread.Sleep(3000);  // 👈 至少显示 3 秒
 
-            RootKernel kernel = new RootKernel();
+            RootKernel kernel = new RootKernel(splashForm);  // 传入 splash 用于进度更新
             kernel.Prepare();
             
             log.Debug("Closing splash screen.");
             splashForm.Close();
+            splashForm.Dispose();
 
             log.Debug("Launching.");
             kernel.Launch();
+
+            // 程序退出时清空会话
+            ClientSession.Clear();
         }
 
         /// <summary>
