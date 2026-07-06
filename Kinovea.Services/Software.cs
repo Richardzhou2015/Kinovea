@@ -34,6 +34,12 @@ namespace Kinovea.Services
     {
         public static string ApplicationName { get { return "Kinovea";}}
 
+        /// <summary>
+        /// Custom branding title shown on splash and login screens.
+        /// Configurable per deployment.
+        /// </summary>
+        public static string CustomAppTitle { get; set; } = "Kinovea";
+
         public static bool Experimental { get { return false;}}
         
         public static string Version { get; private set; }

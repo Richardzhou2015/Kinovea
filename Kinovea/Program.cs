@@ -101,6 +101,9 @@ namespace Kinovea.Root
             log.Debug("Login phase: showing login window.");
             string machineId = MachineHelper.GetMachineUniqueId();
 
+            // 设置系统品牌名称（全局变量，登录框/Splash/主窗口均可见）
+            Software.CustomAppTitle = "射箭运动姿态评估分析系统 V1.0";
+
             using (LoginSplash loginWindow = new LoginSplash())
             {
                 DialogResult loginCheck = loginWindow.ShowDialog();

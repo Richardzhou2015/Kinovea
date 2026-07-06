@@ -37,7 +37,8 @@ namespace Kinovea.Root
       this.SuspendLayout();
       // 
       // lblVersion
-      // 
+      // 
+
       this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.lblVersion.AutoSize = true;
       this.lblVersion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
@@ -74,6 +75,21 @@ namespace Kinovea.Root
       // 
       // lblStatus
       // 
+      // 
+      // lblSplashTitle
+      //
+      this.lblSplashTitle.AutoSize = false;
+      this.lblSplashTitle.Font = new System.Drawing.Font("Microsoft YaHei", 20F, System.Drawing.FontStyle.Bold);
+      this.lblSplashTitle.ForeColor = System.Drawing.Color.White;
+      this.lblSplashTitle.Location = new System.Drawing.Point(30, 300);
+      this.lblSplashTitle.Name = "lblSplashTitle";
+      this.lblSplashTitle.Size = new System.Drawing.Size(500, 40);
+      this.lblSplashTitle.TabIndex = 5;
+      this.lblSplashTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblSplashTitle.Visible = false;
+      // 
+      // lblStatus
+      // 
       this.lblStatus.AutoSize = false;
       this.lblStatus.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblStatus.ForeColor = System.Drawing.Color.White;
@@ -91,6 +107,7 @@ namespace Kinovea.Root
       this.BackColor = System.Drawing.Color.White;
       this.ClientSize = new System.Drawing.Size(560, 353);
       this.ControlBox = false;
+      this.Controls.Add(this.lblSplashTitle);
       this.Controls.Add(this.lblStatus);
       this.Controls.Add(this.progressBar1);
       this.Controls.Add(this.lblVersion);
@@ -112,5 +129,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Label lblSplashTitle;
     }
 }

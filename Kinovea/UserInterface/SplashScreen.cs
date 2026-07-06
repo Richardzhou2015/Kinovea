@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using Kinovea.Root.Languages;
+using Kinovea.Services;
 using System;
 using System.Windows.Forms;
 
@@ -49,6 +50,9 @@ namespace Kinovea.Root
                 lblStatus.Visible = true;
                 progressBar1.Visible = true;
                 progressBar1.Value = 0;
+
+                lblSplashTitle.Visible = true;
+                lblSplashTitle.Text = Kinovea.Services.Software.CustomAppTitle;
             }
         }
 
