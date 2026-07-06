@@ -1,6 +1,9 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Kinovea.Root
@@ -11,26 +14,22 @@ namespace Kinovea.Root
         private readonly string fixedPwd = "archery123";
         private int errorTimes = 0;
 
-        // Color palette
-        private Color bgTop = Color.FromArgb(8, 22, 40);
-        private Color bgBottom = Color.FromArgb(15, 40, 55);
-        private Color accTeal = Color.FromArgb(0, 180, 200);
-        private Color accGold = Color.FromArgb(220, 180, 60);
-        private Color cardBg = Color.FromArgb(180, 10, 25, 42);
-        private Color textLight = Color.FromArgb(210, 220, 230);
-        private Color textDim = Color.FromArgb(140, 160, 180);
-        private Color inputLine = Color.FromArgb(60, 100, 120);
-        private Color inputFocus = Color.FromArgb(0, 200, 220);
-        private Color btnColor = Color.FromArgb(0, 180, 200);
-
-        // Geometric pattern seed
-        private readonly int patternSeed;
+        private Image backgroundImage;
+        private Color overlayBg = Color.FromArgb(160, 5, 10, 20);
+        private Color borderGlow = Color.FromArgb(80, 210, 180, 60);
+        private Color accGold = Color.FromArgb(220, 190, 70);
+        private Color accCyan = Color.FromArgb(0, 200, 220);
+        private Color inputLine = Color.FromArgb(80, 110, 130);
+        private Color inputFocusColor = Color.FromArgb(0, 220, 240);
 
         public LoginSplash()
         {
             InitializeComponent();
             this.DoubleBuffered = true;
-            patternSeed = DateTime.Now.Millisecond;
+            this.ResizeRedraw = true;
+
+            // 从嵌入式资源加载背景图
+            backgroundImage = LoadBackgroundImage();
 
             txtPassword.PasswordChar = '*';
             txtPassword.UseSystemPasswordChar = false;
@@ -40,9 +39,24 @@ namespace Kinovea.Root
             txtPassword.GotFocus += (s, e) => Invalidate();
             txtPassword.LostFocus += (s, e) => Invalidate();
 
-            // 悬浮效果
-            btnLogin.MouseEnter += (s, e) => { btnLogin.BackColor = Color.FromArgb(0, 200, 220); };
-            btnLogin.MouseLeave += (s, e) => { btnLogin.BackColor = btnColor; };
+            btnLogin.MouseEnter += (s, e) => { btnLogin.BackColor = Color.FromArgb(0, 210, 230); };
+            btnLogin.MouseLeave += (s, e) => { btnLogin.BackColor = Color.FromArgb(0, 190, 210); };
+        }
+
+        private Image LoadBackgroundImage()
+        {
+            try
+            {
+                Assembly asm = Assembly.GetExecutingAssembly();
+                string resourceName = "Kinovea.Root.Resources.LoginBackground.png";
+                using (Stream stream = asm.GetManifestResourceStream(resourceName))
+                {
+                    if (stream != null)
+                        return Image.FromStream(stream);
+                }
+            }
+            catch { }
+            return null;
         }
 
         private void LoginSplash_Paint(object sender, PaintEventArgs e)
@@ -54,129 +68,100 @@ namespace Kinovea.Root
             // 窗口圆角
             Region = System.Drawing.Region.FromHrgn(NativeMethods.CreateRoundRectRgn(0, 0, Width, Height, 12, 12));
 
-            // 1. 背景渐变
-            using (LinearGradientBrush bgBrush = new LinearGradientBrush(
-                new Rectangle(0, 0, Width, Height), bgTop, bgBottom, LinearGradientMode.Vertical))
+            // 1. 背景图片（等比例缩放填满窗口）
+            if (backgroundImage != null)
             {
-                g.FillRectangle(bgBrush, ClientRectangle);
+                Rectangle srcRect, dstRect;
+                float imgAspect = (float)backgroundImage.Width / backgroundImage.Height;
+                float formAspect = (float)Width / Height;
+
+                if (imgAspect > formAspect)
+                {
+                    int cropW = (int)(backgroundImage.Height * formAspect);
+                    srcRect = new Rectangle((backgroundImage.Width - cropW) / 2, 0, cropW, backgroundImage.Height);
+                }
+                else
+                {
+                    int cropH = (int)(backgroundImage.Width / formAspect);
+                    srcRect = new Rectangle(0, (backgroundImage.Height - cropH) / 2, backgroundImage.Width, cropH);
+                }
+                dstRect = new Rectangle(0, 0, Width, Height);
+                g.DrawImage(backgroundImage, dstRect, srcRect, GraphicsUnit.Pixel);
+            }
+            else
+            {
+                // 无背景图时的纯色底
+                using (LinearGradientBrush bg = new LinearGradientBrush(
+                    ClientRectangle, Color.FromArgb(8, 22, 40), Color.FromArgb(15, 40, 55), LinearGradientMode.Vertical))
+                {
+                    g.FillRectangle(bg, ClientRectangle);
+                }
             }
 
-            // 2. 几何底纹（低多边形三角网格）
-            DrawGeometricPattern(g);
-
-            // 3. 光效粒子
-            DrawParticles(g);
-
-            // 4. 右侧弓箭剪影
-            DrawBowAndArrow(g);
-
-            // 5. 左侧靶心装饰
-            DrawTargetIcon(g, 70, 85, 35);
-
-            // 6. 中心登录卡片（半透明背景）
-            Rectangle cardRect = new Rectangle(80, 120, 440, 280);
-            using (GraphicsPath cardPath = RoundRect(cardRect, 10))
-            using (SolidBrush cardBrush = new SolidBrush(cardBg))
+            // 2. 整体暗色叠加层（让 UI 控件更清晰）
+            using (SolidBrush dimBrush = new SolidBrush(Color.FromArgb(120, 0, 0, 0)))
             {
-                g.FillPath(cardBrush, cardPath);
-            }
-            // 卡片边框
-            using (Pen borderPen = new Pen(Color.FromArgb(50, 100, 130), 1))
-            using (GraphicsPath cardPath = RoundRect(cardRect, 10))
-            {
-                g.DrawPath(borderPen, cardPath);
+                g.FillRectangle(dimBrush, ClientRectangle);
             }
 
-            // 7. 底部功能区（三个特性项）
+            // 3. 顶部/底部渐隐遮罩
+            using (LinearGradientBrush topFade = new LinearGradientBrush(
+                new Rectangle(0, 0, Width, 120), Color.FromArgb(120, 0, 0, 0), Color.Transparent, LinearGradientMode.Vertical))
+            {
+                g.FillRectangle(topFade, 0, 0, Width, 120);
+            }
+            using (LinearGradientBrush bottomFade = new LinearGradientBrush(
+                new Rectangle(0, Height - 80, Width, 80), Color.Transparent, Color.FromArgb(160, 0, 0, 0), LinearGradientMode.Vertical))
+            {
+                g.FillRectangle(bottomFade, 0, Height - 80, Width, 80);
+            }
+
+            // 4. 中间登录卡片
+            Rectangle cardRect = new Rectangle(65, 100, 470, 270);
+            using (GraphicsPath cardPath = RoundRect(cardRect, 8))
+            {
+                // 卡片内部半透填充
+                using (SolidBrush cardFill = new SolidBrush(Color.FromArgb(170, 8, 16, 28)))
+                {
+                    g.FillPath(cardFill, cardPath);
+                }
+                // 卡片发光边框
+                using (Pen borderPen = new Pen(borderGlow, 2))
+                {
+                    g.DrawPath(borderPen, cardPath);
+                }
+                // 卡片顶部高光条
+                Rectangle highlightBar = new Rectangle(cardRect.X + 2, cardRect.Y + 2, cardRect.Width - 4, 3);
+                using (LinearGradientBrush highBrush = new LinearGradientBrush(
+                    highlightBar, accGold, Color.Transparent, LinearGradientMode.Horizontal))
+                {
+                    g.FillRectangle(highBrush, highlightBar);
+                }
+            }
+
+            // 5. HUD 装饰元素 - 左上角靶心
+            DrawHUDTarget(g, 35, 35, 18);
+
+            // 6. 右侧功能面板（参考图右侧 System Functions）
+            DrawRightPanel(g);
+
+            // 7. 底部三个特性项
             DrawFeatureItems(g);
 
-            // 8. 输入框底部分隔线
-            DrawInputUnderline(g, txtAccount, txtAccount.Focused ? inputFocus : inputLine);
-            DrawInputUnderline(g, txtPassword, txtPassword.Focused ? inputFocus : inputLine);
+            // 8. 输入框底部高亮分隔线
+            DrawInputUnderline(g, txtAccount, txtAccount.Focused ? inputFocusColor : inputLine);
+            DrawInputUnderline(g, txtPassword, txtPassword.Focused ? inputFocusColor : inputLine);
         }
 
-        private void DrawGeometricPattern(Graphics g)
-        {
-            Random rnd = new Random(patternSeed);
-            int spacing = 80;
-            using (Pen linePen = new Pen(Color.FromArgb(18, 60, 80), 1))
-            {
-                for (int x = 0; x < Width + spacing; x += spacing)
-                {
-                    for (int y = 0; y < Height + spacing; y += spacing)
-                    {
-                        int ox = rnd.Next(-15, 15);
-                        int oy = rnd.Next(-15, 15);
-                        Point p1 = new Point(x + ox, y + oy);
-                        Point p2 = new Point(x + spacing + rnd.Next(-10, 10), y + rnd.Next(-10, 10));
-                        Point p3 = new Point(x + rnd.Next(-10, 10), y + spacing + rnd.Next(-10, 10));
-                        g.DrawLine(linePen, p1, p2);
-                        g.DrawLine(linePen, p1, p3);
-                        g.DrawLine(linePen, p2, p3);
-                    }
-                }
-            }
-        }
-
-        private void DrawParticles(Graphics g)
-        {
-            Random rnd = new Random(patternSeed + 1);
-            for (int i = 0; i < 30; i++)
-            {
-                int x = rnd.Next(0, Width);
-                int y = rnd.Next(0, Height);
-                int r = rnd.Next(2, 6);
-                int alpha = rnd.Next(30, 90);
-                using (SolidBrush b = new SolidBrush(Color.FromArgb(alpha, 180, 220, 255)))
-                {
-                    g.FillEllipse(b, x, y, r, r);
-                }
-            }
-        }
-
-        private void DrawBowAndArrow(Graphics g)
-        {
-            int cx = Width - 60;
-            int cy = 140;
-
-            // 弓 — 用曲线画半圆弧
-            using (Pen bowPen = new Pen(Color.FromArgb(60, 150, 180), 2))
-            {
-                Point p1 = new Point(cx - 10, cy - 60);
-                Point p2 = new Point(cx - 10, cy + 60);
-                // 弓的弧形（左凸）
-                g.DrawArc(bowPen, cx - 45, cy - 60, 70, 120, 270, 180);
-                // 弓弦
-                g.DrawLine(bowPen, p1, p2);
-            }
-
-            // 箭 — 直线+箭头
-            using (Pen arrowPen = new Pen(Color.FromArgb(180, 200, 210), 2))
-            {
-                // 箭杆
-                g.DrawLine(arrowPen, cx - 10, cy, cx + 40, cy);
-                // 箭头（三角形）
-                PointF[] arrowHead = {
-                    new PointF(cx + 40, cy),
-                    new PointF(cx + 50, cy - 6),
-                    new PointF(cx + 50, cy + 6)
-                };
-                g.FillPolygon(Brushes.White, arrowHead);
-            }
-
-            // 箭尾羽毛
-            using (Pen featherPen = new Pen(Color.FromArgb(100, 200, 210), 1))
-            {
-                g.DrawLine(featherPen, cx - 10, cy, cx - 18, cy - 8);
-                g.DrawLine(featherPen, cx - 10, cy, cx - 18, cy + 8);
-            }
-        }
-
-        private void DrawTargetIcon(Graphics g, int cx, int cy, int r)
+        private void DrawHUDTarget(Graphics g, int cx, int cy, int r)
         {
             int[] radii = { r, r * 3 / 4, r / 2, r / 4 };
-            Color[] colors = { Color.FromArgb(40, 100, 120), Color.FromArgb(60, 130, 150), Color.FromArgb(80, 160, 180), Color.FromArgb(200, 180, 60) };
-
+            Color[] colors = {
+                Color.FromArgb(40, 50, 70),
+                Color.FromArgb(60, 80, 100),
+                Color.FromArgb(80, 120, 140),
+                Color.FromArgb(220, 190, 70)
+            };
             for (int i = 0; i < radii.Length; i++)
             {
                 using (SolidBrush b = new SolidBrush(colors[i]))
@@ -186,11 +171,71 @@ namespace Kinovea.Root
                 }
             }
 
-            // 准星十字
-            using (Pen crossPen = new Pen(Color.FromArgb(180, 200, 220), 1))
+            // 十字准星
+            using (Pen p = new Pen(Color.FromArgb(180, 220, 240), 1))
             {
-                g.DrawLine(crossPen, cx - 8, cy, cx + 8, cy);
-                g.DrawLine(crossPen, cx, cy - 8, cx, cy + 8);
+                g.DrawLine(p, cx - r, cy, cx + r, cy);
+                g.DrawLine(p, cx, cy - r, cx, cy + r);
+            }
+        }
+
+        private void DrawRightPanel(Graphics g)
+        {
+            Rectangle panelRect = new Rectangle(400, 130, 170, 220);
+            using (GraphicsPath path = RoundRect(panelRect, 6))
+            using (SolidBrush fill = new SolidBrush(Color.FromArgb(100, 5, 12, 22)))
+            using (Pen border = new Pen(Color.FromArgb(60, 180, 200, 220), 1))
+            {
+                g.FillPath(fill, path);
+                g.DrawPath(border, path);
+            }
+
+            // 面板标题
+            using (Font titleFont = new Font("Microsoft YaHei", 10F, FontStyle.Bold))
+            using (SolidBrush titleBrush = new SolidBrush(accCyan))
+            {
+                g.DrawString("系统功能", titleFont, titleBrush, panelRect.X + 10, panelRect.Y + 12);
+            }
+
+            // 分隔线
+            using (Pen sep = new Pen(Color.FromArgb(40, 160, 190, 220), 1))
+            {
+                g.DrawLine(sep, panelRect.X + 8, panelRect.Y + 36, panelRect.Right - 8, panelRect.Y + 36);
+            }
+
+            // 功能项
+            string[] items = { "视频动作分析", "关节角度评估", "训练报告生成", "数据导出" };
+            int y = panelRect.Y + 48;
+            using (Font itemFont = new Font("Microsoft YaHei", 9F))
+            using (SolidBrush itemBrush = new SolidBrush(Color.FromArgb(170, 200, 220)))
+            {
+                for (int i = 0; i < items.Length; i++)
+                {
+                    // 小圆点指示
+                    g.FillEllipse(Brushes.White, panelRect.X + 12, y + 5, 5, 5);
+                    g.DrawString(items[i], itemFont, itemBrush, panelRect.X + 24, y);
+                    y += 36;
+                }
+            }
+        }
+
+        private void DrawFeatureItems(Graphics g)
+        {
+            string[] items = { "动作序列分析", "关节角度评估", "训练报告生成" };
+            int startX = 90;
+            int y = 400;
+            int spacing = 120;
+
+            using (Font font = new Font("Microsoft YaHei", 9F, FontStyle.Regular))
+            using (SolidBrush dotBrush = new SolidBrush(accCyan))
+            using (SolidBrush textBrush = new SolidBrush(Color.FromArgb(150, 190, 210)))
+            {
+                for (int i = 0; i < items.Length; i++)
+                {
+                    int x = startX + i * spacing;
+                    g.FillEllipse(dotBrush, x, y + 4, 6, 6);
+                    g.DrawString(items[i], font, textBrush, x + 12, y);
+                }
             }
         }
 
@@ -199,34 +244,6 @@ namespace Kinovea.Root
             using (Pen pen = new Pen(color, 2))
             {
                 g.DrawLine(pen, tb.Left, tb.Bottom + 3, tb.Right, tb.Bottom + 3);
-            }
-        }
-
-        private void DrawFeatureItems(Graphics g)
-        {
-            string[] items = { "动作序列分析", "关节角度评估", "训练报告生成" };
-            int startX = 120;
-            int y = 425;
-            int spacing = 130;
-
-            using (Font font = new Font("Microsoft YaHei", 9F, FontStyle.Regular))
-            {
-                for (int i = 0; i < items.Length; i++)
-                {
-                    int x = startX + i * spacing;
-
-                    // 小圆点
-                    using (SolidBrush dotBrush = new SolidBrush(accTeal))
-                    {
-                        g.FillEllipse(dotBrush, x, y + 4, 6, 6);
-                    }
-
-                    // 文字
-                    using (SolidBrush textBrush = new SolidBrush(textDim))
-                    {
-                        g.DrawString(items[i], font, textBrush, x + 12, y);
-                    }
-                }
             }
         }
 
@@ -276,7 +293,6 @@ namespace Kinovea.Root
             }
         }
 
-        // ---------- Helper: 圆角矩形 Path ----------
         private GraphicsPath RoundRect(Rectangle r, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -294,5 +310,7 @@ namespace Kinovea.Root
     {
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern IntPtr CreateRoundRectRgn(int x1, int y1, int x2, int y2, int cx, int cy);
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        public static extern IntPtr DeleteObject(IntPtr hObject);
     }
 }

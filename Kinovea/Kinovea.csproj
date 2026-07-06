@@ -469,6 +469,7 @@
       <DependentUpon>FormAbout.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\LoginBackground.png" />
     <EmbeddedResource Include="Resources\%24this.Icon.ico" />
     <EmbeddedResource Include="UserInterface\SupervisorUserInterface.resx">
       <DependentUpon>SupervisorUserInterface.cs</DependentUpon>
