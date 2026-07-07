@@ -1,5 +1,5 @@
 /*
-Copyright © Joan Charmant 2008.
+Copyright ï¿½ Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -29,11 +29,6 @@ namespace Kinovea.Root
         public FormSplashScreen()
         {
             InitializeComponent();
-            Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            if (v.Build == 0)
-                lblVersion.Text = v.Major + "." + v.Minor;
-            else
-                lblVersion.Text = v.Major + "." + v.Minor + "." + v.Build;
         }
     }
 }
