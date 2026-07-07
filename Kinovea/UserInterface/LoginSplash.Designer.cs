@@ -29,11 +29,6 @@ namespace Kinovea.Root
                 {
                     this.Region.Dispose();
                 }
-                // 释放嵌入式资源加载的场馆背景图
-                if (backgroundImage != null)
-                {
-                    backgroundImage.Dispose();
-                }
             }
             base.Dispose(disposing);
         }
@@ -54,8 +49,8 @@ namespace Kinovea.Root
             this.lblTitle.Font = new Font("Microsoft YaHei", 20F, FontStyle.Bold);
             this.lblTitle.ForeColor = Color.FromArgb(220, 200, 160);
             this.lblTitle.Location = new Point(85, 115);
-            this.lblTitle.Size = new Size(300, 40);
-            this.lblTitle.Text = "射箭运动姿态评估";
+            this.lblTitle.Size = new Size(380, 40);
+            this.lblTitle.Text = "射箭运动姿态评估分析系统 V1.0";
             this.lblTitle.TextAlign = ContentAlignment.MiddleCenter;
 
             // label1

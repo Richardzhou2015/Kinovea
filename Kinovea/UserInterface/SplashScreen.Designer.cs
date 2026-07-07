@@ -105,7 +105,7 @@ namespace Kinovea.Root
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.BackColor = System.Drawing.Color.White;
+      this.BackColor = System.Drawing.Color.FromArgb(8, 22, 40);
       this.ClientSize = new System.Drawing.Size(560, 353);
       this.ControlBox = false;
       this.Controls.Add(this.lblSplashTitle);

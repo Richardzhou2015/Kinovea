@@ -1,9 +1,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace Kinovea.Root
@@ -14,9 +11,6 @@ namespace Kinovea.Root
         private readonly string fixedPwd = "archery123";
         private int errorTimes = 0;
 
-        private Image backgroundImage; // 嵌入式资源加载的场馆实景背景图
-
-        private Color overlayBg = Color.FromArgb(160, 5, 10, 20);
         private Color borderGlow = Color.FromArgb(80, 210, 180, 60);
         private Color accGold = Color.FromArgb(220, 190, 70);
         private Color accCyan = Color.FromArgb(0, 200, 220);
@@ -28,9 +22,6 @@ namespace Kinovea.Root
             InitializeComponent();
             this.DoubleBuffered = true;
             this.ResizeRedraw = true;
-
-            // 从嵌入式资源加载背景图
-            backgroundImage = LoadBackgroundImage();
 
             txtPassword.PasswordChar = '*';
             txtPassword.UseSystemPasswordChar = false;
@@ -92,77 +83,34 @@ namespace Kinovea.Root
             }
         }
 
-        private Image LoadBackgroundImage()
-        {
-            try
-            {
-                Assembly asm = Assembly.GetExecutingAssembly();
-                string resourceName = "Kinovea.Root.Resources.LoginBackground.png";
-                using (Stream stream = asm.GetManifestResourceStream(resourceName))
-                {
-                    if (stream != null)
-                        return Image.FromStream(stream);
-                }
-            }
-            catch { }
-            return null;
-        }
-
         private void LoginSplash_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-            // 1. 背景图片（等比例缩放填满窗口）
-            if (backgroundImage != null)
+            // 1. 背景渐变（深青体育主题，与控件风格统一）
+            using (LinearGradientBrush bg = new LinearGradientBrush(
+                ClientRectangle, Color.FromArgb(8, 22, 40), Color.FromArgb(18, 48, 68), LinearGradientMode.Vertical))
             {
-                Rectangle srcRect, dstRect;
-                float imgAspect = (float)backgroundImage.Width / backgroundImage.Height;
-                float formAspect = (float)Width / Height;
-
-                if (imgAspect > formAspect)
-                {
-                    int cropW = (int)(backgroundImage.Height * formAspect);
-                    srcRect = new Rectangle((backgroundImage.Width - cropW) / 2, 0, cropW, backgroundImage.Height);
-                }
-                else
-                {
-                    int cropH = (int)(backgroundImage.Width / formAspect);
-                    srcRect = new Rectangle(0, (backgroundImage.Height - cropH) / 2, backgroundImage.Width, cropH);
-                }
-                dstRect = new Rectangle(0, 0, Width, Height);
-                g.DrawImage(backgroundImage, dstRect, srcRect, GraphicsUnit.Pixel);
+                g.FillRectangle(bg, ClientRectangle);
             }
-            else
+
+            // 2. 微妙径向光晕（窗口中央偏上，增加层次感）
+            using (GraphicsPath glowPath = new GraphicsPath())
             {
-                // 无背景图时的纯色底
-                using (LinearGradientBrush bg = new LinearGradientBrush(
-                    ClientRectangle, Color.FromArgb(8, 22, 40), Color.FromArgb(15, 40, 55), LinearGradientMode.Vertical))
+                int glowR = Math.Max(Width, Height) / 2;
+                glowPath.AddEllipse(Width / 2 - glowR / 2, -glowR / 2, glowR, glowR);
+                using (PathGradientBrush glowBrush = new PathGradientBrush(glowPath))
                 {
-                    g.FillRectangle(bg, ClientRectangle);
+                    glowBrush.CenterPoint = new PointF(Width / 2f, Height / 4f);
+                    glowBrush.CenterColor = Color.FromArgb(40, 60, 90);
+                    glowBrush.SurroundColors = new Color[] { Color.Transparent };
+                    g.FillRectangle(glowBrush, ClientRectangle);
                 }
             }
 
-            // 2. 整体暗色叠加层（让 UI 控件更清晰）
-            using (SolidBrush dimBrush = new SolidBrush(Color.FromArgb(120, 0, 0, 0)))
-            {
-                g.FillRectangle(dimBrush, ClientRectangle);
-            }
-
-            // 3. 顶部/底部渐隐遮罩
-            using (LinearGradientBrush topFade = new LinearGradientBrush(
-                new Rectangle(0, 0, Width, 120), Color.FromArgb(120, 0, 0, 0), Color.Transparent, LinearGradientMode.Vertical))
-            {
-                g.FillRectangle(topFade, 0, 0, Width, 120);
-            }
-            using (LinearGradientBrush bottomFade = new LinearGradientBrush(
-                new Rectangle(0, Height - 80, Width, 80), Color.Transparent, Color.FromArgb(160, 0, 0, 0), LinearGradientMode.Vertical))
-            {
-                g.FillRectangle(bottomFade, 0, Height - 80, Width, 80);
-            }
-
-            // 4. 中间登录卡片
+            // 3. 中间登录卡片
             Rectangle cardRect = new Rectangle(65, 100, 470, 270);
             using (GraphicsPath cardPath = RoundRect(cardRect, 8))
             {
