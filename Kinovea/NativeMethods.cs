@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -138,5 +138,11 @@ namespace Kinovea.Root
 
         [DllImport("gdi32.dll")]
         public static extern IntPtr CreateRoundRectRgn(int x1, int y1, int x2, int y2, int cx, int cy);
+
+        /// <summary>
+        /// 释放 GDI 对象句柄。调用 CreateRoundRectRgn 创建的 HRGN 在复制到 Region 后应立即释放。
+        /// </summary>
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
     }
 }

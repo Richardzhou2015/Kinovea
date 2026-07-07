@@ -15,6 +15,7 @@ namespace Kinovea.Root
         private int errorTimes = 0;
 
         private Image backgroundImage;
+
         private Color overlayBg = Color.FromArgb(160, 5, 10, 20);
         private Color borderGlow = Color.FromArgb(80, 210, 180, 60);
         private Color accGold = Color.FromArgb(220, 190, 70);
@@ -43,6 +44,66 @@ namespace Kinovea.Root
             btnLogin.MouseLeave += (s, e) => { btnLogin.BackColor = Color.FromArgb(0, 190, 210); };
         }
 
+        /// <summary>
+        /// 窗口加载：创建一次圆角 Region，后续通过 OnResize 更新。
+        /// </summary>
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            UpdateWindowRegion();
+        }
+
+        /// <summary>
+        /// 窗口大小变化时释放旧 Region，创建新 Region。
+        /// </summary>
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            UpdateWindowRegion();
+        }
+
+        /// <summary>
+        /// 释放当前 Region 及背景图。
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (this.Region != null)
+                {
+                    this.Region.Dispose();
+                }
+                if (backgroundImage != null)
+                {
+                    backgroundImage.Dispose();
+                    backgroundImage = null;
+                }
+            }
+            base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// 创建/更新窗口圆角 Region，自动释放旧 Region 防止 GDI 句柄泄漏。
+        /// </summary>
+        private void UpdateWindowRegion()
+        {
+            if (Width <= 0 || Height <= 0) return;
+
+            IntPtr hrgn = NativeMethods.CreateRoundRectRgn(0, 0, Width, Height, 12, 12);
+            if (hrgn != IntPtr.Zero)
+            {
+                Region newRegion = Region.FromHrgn(hrgn);
+                // 立即释放 GDI 句柄（Region.FromHrgn 已复制数据，句柄可释放）
+                NativeMethods.DeleteObject(hrgn);
+
+                // 交换：赋新 Region，释放旧 Region
+                Region oldRegion = this.Region;
+                this.Region = newRegion;
+                if (oldRegion != null)
+                    oldRegion.Dispose();
+            }
+        }
+
         private Image LoadBackgroundImage()
         {
             try
@@ -64,9 +125,6 @@ namespace Kinovea.Root
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-
-            // 窗口圆角
-            Region = System.Drawing.Region.FromHrgn(NativeMethods.CreateRoundRectRgn(0, 0, Width, Height, 12, 12));
 
             // 1. 背景图片（等比例缩放填满窗口）
             if (backgroundImage != null)
