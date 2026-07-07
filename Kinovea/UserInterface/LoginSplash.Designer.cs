@@ -24,10 +24,12 @@ namespace Kinovea.Root
                 {
                     components.Dispose();
                 }
+                // 释放窗口圆角 Region，避免 GDI 句柄泄漏
                 if (this.Region != null)
                 {
                     this.Region.Dispose();
                 }
+                // 释放嵌入式资源加载的场馆背景图
                 if (backgroundImage != null)
                 {
                     backgroundImage.Dispose();

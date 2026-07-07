@@ -14,7 +14,7 @@ namespace Kinovea.Root
         private readonly string fixedPwd = "archery123";
         private int errorTimes = 0;
 
-        private Image backgroundImage;
+        private Image backgroundImage; // 嵌入式资源加载的场馆实景背景图
 
         private Color overlayBg = Color.FromArgb(160, 5, 10, 20);
         private Color borderGlow = Color.FromArgb(80, 210, 180, 60);
@@ -44,18 +44,24 @@ namespace Kinovea.Root
             btnLogin.MouseLeave += (s, e) => { btnLogin.BackColor = Color.FromArgb(0, 190, 210); };
         }
 
-        /// <summary>
-        /// 窗口加载：创建一次圆角 Region，后续通过 OnResize 更新。
-        /// </summary>
+        // ═══════════════════════════════════════════════════════════════════
+        // Region 生命周期管理：将窗口圆角从 Paint 事件中移出
+        // ───────────────────────────────────────────────────────────────────
+        // 修复前：LoginSplash_Paint 每帧 new Region.FromHrgn(...) 赋值给
+        //   this.Region，旧 Region 从不 Dispose → GDI 句柄泄漏 → 登录闪退
+        // 修复后：OnLoad 创建一次，OnResize 重建，UpdateWindowRegion 中
+        //   swap 旧 Region 并 Dispose。同时 Designer.cs Dispose 中追加
+        //   this.Region.Dispose() 和 backgroundImage.Dispose()。
+        // ═══════════════════════════════════════════════════════════════════
+
+        /// <summary>窗口加载时创建一次窗口圆角 Region</summary>
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             UpdateWindowRegion();
         }
 
-        /// <summary>
-        /// 窗口大小变化时释放旧 Region，创建新 Region。
-        /// </summary>
+        /// <summary>窗口大小变化时重建窗口圆角 Region</summary>
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -63,7 +69,9 @@ namespace Kinovea.Root
         }
 
         /// <summary>
-        /// 创建/更新窗口圆角 Region，自动释放旧 Region 防止 GDI 句柄泄漏。
+        /// 更新窗口圆角 Region，自动释放旧 Region 防止 GDI 句柄泄漏。
+        /// 流程：CreateRoundRectRgn → FromHrgn 复制 → DeleteObject 释放 GDI 句柄
+        ///       → swap this.Region → Dispose 旧 Region
         /// </summary>
         private void UpdateWindowRegion()
         {
@@ -72,11 +80,11 @@ namespace Kinovea.Root
             IntPtr hrgn = NativeMethods.CreateRoundRectRgn(0, 0, Width, Height, 12, 12);
             if (hrgn != IntPtr.Zero)
             {
+                // FromHrgn 内部复制 HRGN 数据到托管 Region，原始 GDI 句柄可立即释放
                 Region newRegion = Region.FromHrgn(hrgn);
-                // 立即释放 GDI 句柄（Region.FromHrgn 已复制数据，句柄可释放）
                 NativeMethods.DeleteObject(hrgn);
 
-                // 交换：赋新 Region，释放旧 Region
+                // swap：this.Region 赋值前先保存旧引用，赋值后 Dispose
                 Region oldRegion = this.Region;
                 this.Region = newRegion;
                 if (oldRegion != null)
