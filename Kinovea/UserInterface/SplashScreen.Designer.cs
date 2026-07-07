@@ -33,6 +33,7 @@ namespace Kinovea.Root
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.progressBar1 = new System.Windows.Forms.ProgressBar();
       this.lblStatus = new System.Windows.Forms.Label();
+      this.lblSplashTitle = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.SuspendLayout();
       // 
