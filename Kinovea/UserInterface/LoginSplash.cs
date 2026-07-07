@@ -63,26 +63,6 @@ namespace Kinovea.Root
         }
 
         /// <summary>
-        /// 释放当前 Region 及背景图。
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (this.Region != null)
-                {
-                    this.Region.Dispose();
-                }
-                if (backgroundImage != null)
-                {
-                    backgroundImage.Dispose();
-                    backgroundImage = null;
-                }
-            }
-            base.Dispose(disposing);
-        }
-
-        /// <summary>
         /// 创建/更新窗口圆角 Region，自动释放旧 Region 防止 GDI 句柄泄漏。
         /// </summary>
         private void UpdateWindowRegion()

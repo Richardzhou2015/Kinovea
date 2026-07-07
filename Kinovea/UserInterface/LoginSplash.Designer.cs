@@ -18,9 +18,20 @@ namespace Kinovea.Root
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+                if (this.Region != null)
+                {
+                    this.Region.Dispose();
+                }
+                if (backgroundImage != null)
+                {
+                    backgroundImage.Dispose();
+                }
             }
             base.Dispose(disposing);
         }
