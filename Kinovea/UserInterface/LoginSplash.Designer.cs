@@ -14,6 +14,7 @@ namespace Kinovea.Root
         private Label label2;
         private TextBox txtPassword;
         private Button btnLogin;
+        private Button btnCancel;
         private Label lblTip;
 
         protected override void Dispose(bool disposing)
@@ -61,7 +62,7 @@ namespace Kinovea.Root
             this.label1.Text = "账号";
 
             // txtAccount
-            this.txtAccount.BackColor = Color.FromArgb(18, 36, 52);
+            this.txtAccount.BackColor = Color.FromArgb(10, 18, 28);
             this.txtAccount.BorderStyle = BorderStyle.None;
             this.txtAccount.Font = new Font("Microsoft YaHei", 12F);
             this.txtAccount.ForeColor = Color.White;
@@ -76,7 +77,7 @@ namespace Kinovea.Root
             this.label2.Text = "密码";
 
             // txtPassword
-            this.txtPassword.BackColor = Color.FromArgb(18, 36, 52);
+            this.txtPassword.BackColor = Color.FromArgb(10, 18, 28);
             this.txtPassword.BorderStyle = BorderStyle.None;
             this.txtPassword.Font = new Font("Microsoft YaHei", 12F);
             this.txtPassword.ForeColor = Color.White;
@@ -97,10 +98,23 @@ namespace Kinovea.Root
             this.btnLogin.Font = new Font("Microsoft YaHei", 13F, FontStyle.Bold);
             this.btnLogin.ForeColor = Color.White;
             this.btnLogin.Location = new Point(155, 290);
-            this.btnLogin.Size = new Size(230, 46);
-            this.btnLogin.Text = "登  录  系  统";
+            this.btnLogin.Size = new Size(110, 46);
+            this.btnLogin.Text = "登  录";
             this.btnLogin.Cursor = Cursors.Hand;
             this.btnLogin.Click += new EventHandler(this.btnLogin_Click);
+
+            // btnCancel
+            this.btnCancel = new Button();
+            this.btnCancel.BackColor = Color.FromArgb(60, 70, 85);
+            this.btnCancel.FlatStyle = FlatStyle.Flat;
+            this.btnCancel.FlatAppearance.BorderSize = 0;
+            this.btnCancel.Font = new Font("Microsoft YaHei", 13F, FontStyle.Bold);
+            this.btnCancel.ForeColor = Color.FromArgb(180, 190, 200);
+            this.btnCancel.Location = new Point(335, 290);
+            this.btnCancel.Size = new Size(110, 46);
+            this.btnCancel.Text = "取  消";
+            this.btnCancel.Cursor = Cursors.Hand;
+            this.btnCancel.Click += new EventHandler(this.btnCancel_Click);
 
             // Form
             this.AutoScaleDimensions = new SizeF(6F, 13F);
@@ -119,6 +133,7 @@ namespace Kinovea.Root
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.lblTip);
             this.Controls.Add(this.btnLogin);
+            this.Controls.Add(this.btnCancel);
             this.FormClosing += new FormClosingEventHandler(this.LoginSplash_FormClosing);
 
             this.ResumeLayout(false);

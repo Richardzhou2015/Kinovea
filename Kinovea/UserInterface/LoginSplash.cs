@@ -14,8 +14,6 @@ namespace Kinovea.Root
         private Color borderGlow = Color.FromArgb(80, 210, 180, 60);
         private Color accGold = Color.FromArgb(220, 190, 70);
         private Color accCyan = Color.FromArgb(0, 200, 220);
-        private Color inputLine = Color.FromArgb(80, 110, 130);
-        private Color inputFocusColor = Color.FromArgb(0, 220, 240);
 
         public LoginSplash()
         {
@@ -26,13 +24,15 @@ namespace Kinovea.Root
             txtPassword.PasswordChar = '*';
             txtPassword.UseSystemPasswordChar = false;
 
-            txtAccount.GotFocus += (s, e) => Invalidate();
-            txtAccount.LostFocus += (s, e) => Invalidate();
-            txtPassword.GotFocus += (s, e) => Invalidate();
-            txtPassword.LostFocus += (s, e) => Invalidate();
-
-            btnLogin.MouseEnter += (s, e) => { btnLogin.BackColor = Color.FromArgb(0, 210, 230); };
-            btnLogin.MouseLeave += (s, e) => { btnLogin.BackColor = Color.FromArgb(0, 190, 210); };
+            // 密码框回车 = 登录
+            txtPassword.KeyPress += (s, e) =>
+            {
+                if (e.KeyChar == (char)Keys.Return)
+                {
+                    e.Handled = true;
+                    btnLogin_Click(s, e);
+                }
+            };
         }
 
         // ═══════════════════════════════════════════════════════════════════
@@ -133,112 +133,7 @@ namespace Kinovea.Root
                 }
             }
 
-            // 5. HUD 装饰元素 - 左上角靶心
-            DrawHUDTarget(g, 35, 35, 18);
 
-            // 6. 右侧功能面板（参考图右侧 System Functions）
-            DrawRightPanel(g);
-
-            // 7. 底部三个特性项
-            DrawFeatureItems(g);
-
-            // 8. 输入框底部高亮分隔线
-            DrawInputUnderline(g, txtAccount, txtAccount.Focused ? inputFocusColor : inputLine);
-            DrawInputUnderline(g, txtPassword, txtPassword.Focused ? inputFocusColor : inputLine);
-        }
-
-        private void DrawHUDTarget(Graphics g, int cx, int cy, int r)
-        {
-            int[] radii = { r, r * 3 / 4, r / 2, r / 4 };
-            Color[] colors = {
-                Color.FromArgb(40, 50, 70),
-                Color.FromArgb(60, 80, 100),
-                Color.FromArgb(80, 120, 140),
-                Color.FromArgb(220, 190, 70)
-            };
-            for (int i = 0; i < radii.Length; i++)
-            {
-                using (SolidBrush b = new SolidBrush(colors[i]))
-                {
-                    int d = radii[i] * 2;
-                    g.FillEllipse(b, cx - radii[i], cy - radii[i], d, d);
-                }
-            }
-
-            // 十字准星
-            using (Pen p = new Pen(Color.FromArgb(180, 220, 240), 1))
-            {
-                g.DrawLine(p, cx - r, cy, cx + r, cy);
-                g.DrawLine(p, cx, cy - r, cx, cy + r);
-            }
-        }
-
-        private void DrawRightPanel(Graphics g)
-        {
-            Rectangle panelRect = new Rectangle(400, 130, 170, 220);
-            using (GraphicsPath path = RoundRect(panelRect, 6))
-            using (SolidBrush fill = new SolidBrush(Color.FromArgb(100, 5, 12, 22)))
-            using (Pen border = new Pen(Color.FromArgb(60, 180, 200, 220), 1))
-            {
-                g.FillPath(fill, path);
-                g.DrawPath(border, path);
-            }
-
-            // 面板标题
-            using (Font titleFont = new Font("Microsoft YaHei", 10F, FontStyle.Bold))
-            using (SolidBrush titleBrush = new SolidBrush(accCyan))
-            {
-                g.DrawString("系统功能", titleFont, titleBrush, panelRect.X + 10, panelRect.Y + 12);
-            }
-
-            // 分隔线
-            using (Pen sep = new Pen(Color.FromArgb(40, 160, 190, 220), 1))
-            {
-                g.DrawLine(sep, panelRect.X + 8, panelRect.Y + 36, panelRect.Right - 8, panelRect.Y + 36);
-            }
-
-            // 功能项
-            string[] items = { "视频动作分析", "关节角度评估", "训练报告生成", "数据导出" };
-            int y = panelRect.Y + 48;
-            using (Font itemFont = new Font("Microsoft YaHei", 9F))
-            using (SolidBrush itemBrush = new SolidBrush(Color.FromArgb(170, 200, 220)))
-            {
-                for (int i = 0; i < items.Length; i++)
-                {
-                    // 小圆点指示
-                    g.FillEllipse(Brushes.White, panelRect.X + 12, y + 5, 5, 5);
-                    g.DrawString(items[i], itemFont, itemBrush, panelRect.X + 24, y);
-                    y += 36;
-                }
-            }
-        }
-
-        private void DrawFeatureItems(Graphics g)
-        {
-            string[] items = { "动作序列分析", "关节角度评估", "训练报告生成" };
-            int startX = 90;
-            int y = 400;
-            int spacing = 120;
-
-            using (Font font = new Font("Microsoft YaHei", 9F, FontStyle.Regular))
-            using (SolidBrush dotBrush = new SolidBrush(accCyan))
-            using (SolidBrush textBrush = new SolidBrush(Color.FromArgb(150, 190, 210)))
-            {
-                for (int i = 0; i < items.Length; i++)
-                {
-                    int x = startX + i * spacing;
-                    g.FillEllipse(dotBrush, x, y + 4, 6, 6);
-                    g.DrawString(items[i], font, textBrush, x + 12, y);
-                }
-            }
-        }
-
-        private void DrawInputUnderline(Graphics g, TextBox tb, Color color)
-        {
-            using (Pen pen = new Pen(color, 2))
-            {
-                g.DrawLine(pen, tb.Left, tb.Bottom + 3, tb.Right, tb.Bottom + 3);
-            }
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -277,6 +172,13 @@ namespace Kinovea.Root
                 this.DialogResult = DialogResult.Cancel;
                 this.Close();
             }
+        }
+
+        /// <summary>取消按钮：关闭程序</summary>
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
 
         private void LoginSplash_FormClosing(object sender, FormClosingEventArgs e)
