@@ -1,4 +1,4 @@
-namespace Kinovea.FileBrowser
+﻿namespace Kinovea.FileBrowser
 {
     partial class FileBrowserUserInterface
     {
@@ -125,8 +125,9 @@ namespace Kinovea.FileBrowser
       this.etExplorer.Cursor = System.Windows.Forms.Cursors.Default;
       this.etExplorer.Location = new System.Drawing.Point(3, 31);
       this.etExplorer.Name = "etExplorer";
-      this.etExplorer.RootDisplayName = "Bureau";
-      this.etExplorer.ShowHiddenFolders = false;
+ //     this.etExplorer.RootDisplayName = "Bureau";
+      this.etExplorer.RootDisplayName = "桌面";
+            this.etExplorer.ShowHiddenFolders = false;
       this.etExplorer.ShowRootLines = false;
       this.etExplorer.Size = new System.Drawing.Size(299, 267);
       this.etExplorer.TabIndex = 0;

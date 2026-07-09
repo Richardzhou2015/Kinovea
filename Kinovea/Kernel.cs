@@ -1,4 +1,4 @@
-#region Licence
+﻿#region Licence
 /*
 Copyright � Joan Charmant 2008-2009.
 jcharmant@gmail.com 
@@ -493,13 +493,14 @@ namespace Kinovea.Root
             mnuAbout.Image = Properties.Resources.information;
 
             mnuHelpContents.Click += mnuHelpContents_OnClick;
-            mnuTranslate2.Click += (s, e) => Process.Start("https://hosted.weblate.org/engage/kinovea/");
+ //           mnuTranslate2.Click += (s, e) => Process.Start("https://hosted.weblate.org/engage/kinovea/");
+            mnuTranslate2.Click += (s, e) => Process.Start("https://emoego.com/archery/");
             mnuApplicationFolder.Click += (s, e) =>
             {
                 FilesystemHelper.LocateDirectory(Software.SettingsDirectory);
             };
             mnuEnableDebugLogs.Click += (s, e) => ToggleDebugLogs();
-            mnuWebsite.Click += (s,e) => Process.Start("https://www.kinovea.org");
+            mnuWebsite.Click += (s,e) => Process.Start("https://emoego.com/archery/");
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 
             mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
@@ -606,11 +607,15 @@ namespace Kinovea.Root
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
             mnuTranslate2.Text = RootLang.mnuTranslate;
+            mnuTranslate2.Visible = false;
             mnuApplicationFolder.Text = RootLang.mnuOpenApplicationDataFolder;
             mnuEnableDebugLogs.Text = PreferencesManager.GeneralPreferences.EnableDebugLog ? RootLang.mnuDisableDebugLogs : RootLang.mnuEnableDebugLogs;
-            mnuWebsite.Text = "www.kinovea.org";
+            mnuWebsite.Text = "官网定制";
             mnuAbout.Text = RootLang.mnuAbout;
             mnuHelp.Text = RootLang.mnuHelp;
+            mnuAbout.Visible = false;
+            mnuTranslate1.Visible = false;
+            
         }
         #endregion
 
@@ -913,7 +918,7 @@ namespace Kinovea.Root
         {
             // Open online help.
             // Currently only English is supported.
-            Process.Start("https://www.kinovea.org/help/en/");
+            Process.Start("https://emoego.com/archery");
         }
 
         private void ToggleDebugLogs()

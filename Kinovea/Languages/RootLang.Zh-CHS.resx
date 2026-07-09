@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- 
 		www.kinovea.org
 		
@@ -122,10 +122,10 @@
     <value>文件</value>
   </data>
   <data name="mnuHelp" xml:space="preserve">
-    <value>帮助</value>
+    <value>射手助理</value>
   </data>
   <data name="mnuHelpContents" xml:space="preserve">
-    <value>帮助...</value>
+    <value>视频教学</value>
   </data>
   <data name="mnuHistory" xml:space="preserve">
     <value>最近历史</value>
